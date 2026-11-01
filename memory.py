@@ -1,13 +1,4 @@
-"""Memory, puzzle game of number pairs.
-
-Exercises:
-
-1. Count and print how many taps occur.
-2. Decrease the number of tiles to a 4x4 grid.
-3. Detect when all tiles are revealed.
-4. Center single-digit tile.
-5. Use letters instead of tiles.
-"""
+"""Memory, puzzle game of number pairs."""
 
 from random import *
 from turtle import *
@@ -16,8 +7,16 @@ from freegames import path
 
 car = path('car.gif')
 tiles = list(range(32)) * 2
-state = {'mark': None}
+state = {'mark': None, 'taps': 0}
 hide = [True] * 64
+
+# NUEVO: cada pareja tiene un símbolo y un color propios
+SIMBOLOS = ['♠', '♣', '♥', '♦', '★', '☾', '☀', '☁',
+            '☂', '☃', '☎', '☘', '☕', '☠', '☢', '☮',
+            '☯', '☺', '♪', '♫', '⚓', '⚡', '⚽', '⚾',
+            '✂', '✈', '✉', '✎', '✿', '❄', '♞', '♛']
+COLORES = ['red', 'blue', 'green', 'orange',
+           'purple', 'brown', 'magenta', 'darkcyan']
 
 
 def square(x, y):
@@ -45,7 +44,18 @@ def xy(count):
 
 def tap(x, y):
     """Update mark and hidden tiles based on tap."""
+    if not any(hide):
+        return
+    if not (-200 <= x < 200 and -200 <= y < 200):
+        return
+
     spot = index(x, y)
+    if not hide[spot]:
+        return
+
+    state['taps'] += 1
+    print('Taps:', state['taps'])
+
     mark = state['mark']
 
     if mark is None or mark == spot or tiles[mark] != tiles[spot]:
@@ -59,6 +69,7 @@ def tap(x, y):
 def draw():
     """Draw image and tiles."""
     clear()
+    title(f"Memory - Taps: {state['taps']}")
     goto(0, 0)
     shape(car)
     stamp()
@@ -68,14 +79,24 @@ def draw():
             x, y = xy(count)
             square(x, y)
 
+    if not any(hide):
+        up()
+        goto(0, -10)
+        color('red')
+        write(f"¡Ganaste! Taps: {state['taps']}", align='center',
+              font=('Arial', 24, 'bold'))
+        update()
+        return
+
     mark = state['mark']
 
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 2, y)
-        color('black')
-        write(tiles[mark], font=('Arial', 30, 'normal'))
+        goto(x + 25, y + 4)
+        color(COLORES[tiles[mark] % 8])  # NUEVO: color por pareja
+        write(SIMBOLOS[tiles[mark]], align='center',  # NUEVO: símbolo
+              font=('Arial', 30, 'normal'))
 
     update()
     ontimer(draw, 100)

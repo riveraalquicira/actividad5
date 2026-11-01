@@ -10,14 +10,6 @@ tiles = list(range(32)) * 2
 state = {'mark': None, 'taps': 0}
 hide = [True] * 64
 
-# NUEVO: cada pareja tiene un símbolo y un color propios
-SIMBOLOS = ['♠', '♣', '♥', '♦', '★', '☾', '☀', '☁',
-            '☂', '☃', '☎', '☘', '☕', '☠', '☢', '☮',
-            '☯', '☺', '♪', '♫', '⚓', '⚡', '⚽', '⚾',
-            '✂', '✈', '✉', '✎', '✿', '❄', '♞', '♛']
-COLORES = ['red', 'blue', 'green', 'orange',
-           'purple', 'brown', 'magenta', 'darkcyan']
-
 
 def square(x, y):
     """Draw white square with black outline at (x, y)."""
@@ -44,7 +36,7 @@ def xy(count):
 
 def tap(x, y):
     """Update mark and hidden tiles based on tap."""
-    if not any(hide):
+    if not any(hide):  # NUEVO: juego terminado, ya no cuenta taps
         return
     if not (-200 <= x < 200 and -200 <= y < 200):
         return
@@ -79,24 +71,23 @@ def draw():
             x, y = xy(count)
             square(x, y)
 
-    if not any(hide):
+    if not any(hide):  # NUEVO: todos destapados
         up()
         goto(0, -10)
         color('red')
         write(f"¡Ganaste! Taps: {state['taps']}", align='center',
               font=('Arial', 24, 'bold'))
         update()
-        return
+        return  # sin ontimer: el juego se detiene
 
     mark = state['mark']
 
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 25, y + 4)
-        color(COLORES[tiles[mark] % 8])  # NUEVO: color por pareja
-        write(SIMBOLOS[tiles[mark]], align='center',  # NUEVO: símbolo
-              font=('Arial', 30, 'normal'))
+        goto(x + 2, y)
+        color('black')
+        write(tiles[mark], font=('Arial', 30, 'normal'))
 
     update()
     ontimer(draw, 100)

@@ -10,6 +10,14 @@ tiles = list(range(32)) * 2
 state = {'mark': None, 'taps': 0}
 hide = [True] * 64
 
+# NUEVO: cada pareja tiene un símbolo y un color propios
+SIMBOLOS = ['♠', '♣', '♥', '♦', '★', '☾', '☀', '☁',
+            '☂', '☃', '☎', '☘', '☕', '☠', '☢', '☮',
+            '☯', '☺', '♪', '♫', '⚓', '⚡', '⚽', '⚾',
+            '✂', '✈', '✉', '✎', '✿', '❄', '♞', '♛']
+COLORES = ['red', 'blue', 'green', 'orange',
+           'purple', 'brown', 'magenta', 'darkcyan']
+
 
 def square(x, y):
     """Draw white square with black outline at (x, y)."""
@@ -85,9 +93,9 @@ def draw():
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 25, y + 4)  # NUEVO: centro del cuadro (50/2 = 25)
-        color('black')
-        write(tiles[mark], align='center',  # NUEVO: align='center'
+        goto(x + 25, y + 4)
+        color(COLORES[tiles[mark] % 8])  # NUEVO: color por pareja
+        write(SIMBOLOS[tiles[mark]], align='center',  # NUEVO: símbolo
               font=('Arial', 30, 'normal'))
 
     update()

@@ -36,7 +36,7 @@ def xy(count):
 
 def tap(x, y):
     """Update mark and hidden tiles based on tap."""
-    if not any(hide):  # NUEVO: juego terminado, ya no cuenta taps
+    if not any(hide):
         return
     if not (-200 <= x < 200 and -200 <= y < 200):
         return
@@ -71,23 +71,24 @@ def draw():
             x, y = xy(count)
             square(x, y)
 
-    if not any(hide):  # NUEVO: todos destapados
+    if not any(hide):
         up()
         goto(0, -10)
         color('red')
         write(f"¡Ganaste! Taps: {state['taps']}", align='center',
               font=('Arial', 24, 'bold'))
         update()
-        return  # sin ontimer: el juego se detiene
+        return
 
     mark = state['mark']
 
     if mark is not None and hide[mark]:
         x, y = xy(mark)
         up()
-        goto(x + 2, y)
+        goto(x + 25, y + 4)  # NUEVO: centro del cuadro (50/2 = 25)
         color('black')
-        write(tiles[mark], font=('Arial', 30, 'normal'))
+        write(tiles[mark], align='center',  # NUEVO: align='center'
+              font=('Arial', 30, 'normal'))
 
     update()
     ontimer(draw, 100)
